@@ -1,2 +1,2 @@
-export { default as FeedForgeFeed } from './frameworks/react'
-export type { FeedForgeFeedProps } from './frameworks/react'
+export { FeedForgeWidget } from './frameworks/react'
+export type { FeedForgeWidgetProps } from './frameworks/react'

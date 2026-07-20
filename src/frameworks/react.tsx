@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import type React from 'react'
 import { loadFeedForgeWidget } from '../core'
 
-export interface FeedForgeFeedProps {
+export interface FeedForgeWidgetProps {
     /** Token del feed publico */
     token: string
     className?: string
     style?: React.CSSProperties
 }
 
-function FeedForgeFeed({ token, className, style }: Readonly<FeedForgeFeedProps>) {
+export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeWidgetProps>) {
     const ref = useRef<HTMLElement | null>(null)
     const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
 
@@ -39,8 +39,6 @@ function FeedForgeFeed({ token, className, style }: Readonly<FeedForgeFeedProps>
         <feedforge-widget ref={ref} token={token} className={className} style={style} />
     )
 }
-
-export default FeedForgeFeed
 
 declare module 'react' {
     namespace JSX {

@@ -2,14 +2,14 @@ import { createEffect, onCleanup } from 'solid-js'
 import type { Component } from 'solid-js'
 import { loadFeedForgeWidget } from '../core'
 
-export interface FeedForgeFeedProps {
+export interface FeedForgeWidgetProps {
     /** Token del feed publico */
     token: string
     class?: string
     style?: string | Record<string, string>
 }
 
-const FeedForgeFeed: Component<FeedForgeFeedProps> = (props) => {
+export const FeedForgeWidget: Component<FeedForgeWidgetProps> = (props) => {
     loadFeedForgeWidget()
 
     const el = document.createElement('feedforge-widget') as HTMLElement & { token?: string }
@@ -37,5 +37,3 @@ const FeedForgeFeed: Component<FeedForgeFeedProps> = (props) => {
 
     return el
 }
-
-export default FeedForgeFeed

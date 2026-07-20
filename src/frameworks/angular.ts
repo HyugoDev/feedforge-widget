@@ -7,7 +7,7 @@ import { loadFeedForgeWidget } from '../core'
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     template: `<feedforge-widget [attr.token]="token" [attr.class]="class" [attr.style]="style"></feedforge-widget>`,
 })
-export class FeedForgeFeedComponent {
+export class FeedForgeWidget {
     @Input() token!: string
     @Input() class?: string
     @Input() style?: string
