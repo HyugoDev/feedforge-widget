@@ -1,0 +1,52 @@
+{
+  "name": "feedforge-widget",
+  "version": "0.1.0",
+  "description": "Widget publico de FeedForge para integrar feeds en cualquier sitio (React, Solid, Angular o vanilla).",
+  "license": "MIT",
+  "type": "module",
+  "keywords": ["feedforge", "widget", "feed", "react", "solid", "angular", "web-component"],
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./solid": {
+      "types": "./dist/frameworks/solid.d.ts",
+      "import": "./dist/solid.js",
+      "require": "./dist/solid.cjs"
+    },
+    "./angular": {
+      "types": "./dist/frameworks/angular.d.ts",
+      "import": "./dist/angular.js",
+      "require": "./dist/angular.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=16",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "solid-js": ">=1.6"
+  },
+  "devDependencies": {
+    "@angular/core": "^22.0.7",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.7",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "solid-js": "^1.9.14",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  }
+}
