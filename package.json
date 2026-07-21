@@ -1,11 +1,21 @@
 {
-  "name": "feedforge-widget",
+  "name": "@juguitostudio/feedforge-widget",
   "version": "0.1.0",
   "description": "Widget publico de FeedForge para integrar feeds en cualquier sitio (React, Solid, Angular o vanilla).",
   "license": "MIT",
   "type": "module",
-  "keywords": ["feedforge", "widget", "feed", "react", "solid", "angular", "web-component"],
-  "files": ["dist"],
+  "keywords": [
+    "feedforge",
+    "widget",
+    "feed",
+    "react",
+    "solid",
+    "angular",
+    "web-component"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,6 +45,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.build.json",
+    "prepack": "bun run build",
+    "prepublishOnly": "bun run build",
     "preview": "vite preview"
   },
   "peerDependencies": {
