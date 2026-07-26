@@ -12,7 +12,7 @@ export interface FeedForgeWidgetProps {
 }
 
 export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeWidgetProps>) {
-    const ref = useRef<HTMLElement | null>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
     const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
 
     useEffect(() => {
@@ -20,7 +20,8 @@ export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeW
 
         loadFeedForgeWidget()
             .then(() => {
-                if (!cancelled) setStatus('ready')
+                if (cancelled) return
+                setStatus('ready')
             })
             .catch(() => {
                 if (!cancelled) setStatus('error')
@@ -29,15 +30,38 @@ export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeW
         return () => {
             cancelled = true
         }
-    }, [])
+    }, [token])
+
+    useEffect(() => {
+        if (status !== 'ready' || !containerRef.current) return
+
+        const container = containerRef.current
+        let cancelled = false
+
+        customElements.whenDefined('feedforge-widget').then(() => {
+            if (cancelled || !containerRef.current) return
+
+            container.innerHTML = ''
+
+            const widget = document.createElement('feedforge-widget')
+            widget.setAttribute('token', token)
+            container.appendChild(widget)
+        })
+
+        return () => {
+            cancelled = true
+        }
+    }, [status, token])
 
     if (status === 'error') {
-        return <div className={className} style={style}>No se pudo cargar el feed</div>
+        return <div ref={containerRef} className={className} style={style}>No se pudo cargar el feed</div>
     }
 
-    return (
-        <feedforge-widget ref={ref} token={token} className={className} style={style} />
-    )
+    if (status === 'loading') {
+        return <div ref={containerRef} className={className} style={style}>Cargando...</div>
+    }
+
+    return <div ref={containerRef} className={className} style={style} />
 }
 
 declare module 'react' {
