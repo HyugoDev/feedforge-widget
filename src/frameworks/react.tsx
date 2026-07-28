@@ -1,27 +1,56 @@
-"use client"
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import type React from 'react'
-import { loadFeedForgeWidget } from '../core'
+import { loadFeedForgeWidget, TAG_NAME } from '../core'
 
+/**
+ * Props del componente {@link FeedForgeWidget}.
+ *
+ * La apariencia del widget se configura desde el dashboard de FeedForge, por
+ * lo que el único parámetro que recibe el componente es el `token` del feed
+ * público.
+ */
 export interface FeedForgeWidgetProps {
-    /** Token del feed publico */
+    /** Token público del feed (se obtiene en el dashboard de FeedForge). */
     token: string
-    className?: string
-    style?: React.CSSProperties
 }
 
-export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeWidgetProps>) {
+type Status = 'loading' | 'ready' | 'error'
+
+/**
+ * Renderiza el widget público de FeedForge.
+ *
+ * Carga el script del CDN una sola vez (deduplicado por el core) y monta el
+ * custom element `<feedforge-widget>` con el `token` proporcionado. La
+ * apariencia (colores, layout, etc.) se personaliza desde el dashboard, así
+ * que este componente no expone `className`, `style` ni ningún otro atributo.
+ */
+export function FeedForgeWidget({ token }: Readonly<FeedForgeWidgetProps>) {
     const containerRef = useRef<HTMLDivElement>(null)
-    const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+    const [status, setStatus] = useState<Status>('loading')
 
     useEffect(() => {
+        const container = containerRef.current
+        if (!container) return
+
         let cancelled = false
+
+        const mountWidget = () => {
+            if (cancelled || containerRef.current !== container) return
+
+            container.replaceChildren()
+            const widget = document.createElement(TAG_NAME)
+            widget.setAttribute('token', token)
+            container.appendChild(widget)
+        }
 
         loadFeedForgeWidget()
             .then(() => {
-                if (cancelled) return
-                setStatus('ready')
+                if (!cancelled) {
+                    setStatus('ready')
+                    customElements.whenDefined(TAG_NAME).then(mountWidget)
+                }
             })
             .catch(() => {
                 if (!cancelled) setStatus('error')
@@ -29,47 +58,24 @@ export function FeedForgeWidget({ token, className, style }: Readonly<FeedForgeW
 
         return () => {
             cancelled = true
+            container.replaceChildren()
         }
     }, [token])
 
-    useEffect(() => {
-        if (status !== 'ready' || !containerRef.current) return
-
-        const container = containerRef.current
-        let cancelled = false
-
-        customElements.whenDefined('feedforge-widget').then(() => {
-            if (cancelled || !containerRef.current) return
-
-            container.innerHTML = ''
-
-            const widget = document.createElement('feedforge-widget')
-            widget.setAttribute('token', token)
-            container.appendChild(widget)
-        })
-
-        return () => {
-            cancelled = true
-        }
-    }, [status, token])
-
     if (status === 'error') {
-        return <div ref={containerRef} className={className} style={style}>No se pudo cargar el feed</div>
+        return <div>No se pudo cargar el feed</div>
     }
 
-    if (status === 'loading') {
-        return <div ref={containerRef} className={className} style={style}>Cargando...</div>
-    }
-
-    return <div ref={containerRef} className={className} style={style} />
+    return <div ref={containerRef} hidden={status === 'loading'} />
 }
 
 declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
-            'feedforge-widget': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-                token: string
-            }
+            readonly [TAG_NAME]: React.DetailedHTMLProps<
+                React.HTMLAttributes<HTMLElement>,
+                HTMLElement
+            > & { token: string }
         }
     }
 }
