@@ -1,7 +1,14 @@
 /**
+ * Versión del script del widget. Debe coincidir con el header de
+ * `public/widget.js` en el proyecto feedforge. Va como query (?v=) en la URL
+ * para romper la caché del navegador cuando se publica una versión nueva.
+ */
+const WIDGET_SCRIPT_VERSION = '5.2' as const
+
+/**
  * URL del script del widget servido desde el CDN de FeedForge.
  */
-const WIDGET_SCRIPT_URL = 'https://feedforge.hyugodev.me/widget.js' as const
+const WIDGET_SCRIPT_URL = `https://feedforge.hyugodev.me/widget.js?v=${WIDGET_SCRIPT_VERSION}` as const
 
 /**
  * Nombre del custom element registrado por el script del widget.
