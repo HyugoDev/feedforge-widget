@@ -24,6 +24,7 @@ export default defineConfig({
                 'react/jsx-runtime',
                 'solid-js',
                 '@angular/core',
+                '@angular/common',
             ],
             output: {
                 globals: {
@@ -32,6 +33,7 @@ export default defineConfig({
                     'react/jsx-runtime': 'jsxRuntime',
                     'solid-js': 'SolidJS',
                     '@angular/core': 'ng.core',
+                    '@angular/common': 'ng.common',
                 },
             },
         },

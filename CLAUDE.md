@@ -12,11 +12,16 @@ Bun es el runtime y gestor de paquetes (no npm/pnpm).
 | `bun run dev`    | Servidor de desarrollo Vite sobre `index.html` (demo con React).   |
 | `bun run build`  | Compila la librería (`vite build`) y genera los `.d.ts` (`tsc -p tsconfig.build.json`). Salida en `dist/`. |
 | `bun run preview`| Sirve los archivos compilados de `dist/`.                          |
+| `bun run test`   | Tests con Vitest + happy-dom. `bun run test:watch` para watch.     |
 | `bun publish`    | Publica a npm; `prepublishOnly`/`prepack` corren `bun run build` automáticamente. |
 
-No hay test suite ni linter configurados. La verificación de tipo se hace con
-`tsc` como parte de `bun run build` (`noEmit` en `tsconfig.json`). Para
-comprobar tipos sin emitir: `bunx tsc --noEmit`.
+No hay linter configurado. La verificación de tipo se hace con `tsc` como parte
+de `bun run build` (`noEmit` en `tsconfig.json`); para comprobarla en el código
+fuente **y** los tests (ambos en `src/`): `bunx tsc --noEmit`. Los tests viven
+en `src/**/*.test.{ts,tsx}`, usan `vi.resetModules()` + `await import()` fresco
+para aislar la promesa compartida del core, y están **excluidos** de la emisión
+de `.d.ts` en `tsconfig.build.json`. El `vitest.config.ts` añade la condición
+`browser` al resolver para que `solid-js/web` resuelva al build de cliente.
 
 ## Arquitectura
 

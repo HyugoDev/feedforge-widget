@@ -1,6 +1,6 @@
 {
   "name": "@juguitostudio/feedforge-widget",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Widget publico de FeedForge para integrar feeds en cualquier sitio (React, Solid, Angular o vanilla).",
   "license": "MIT",
   "type": "module",
@@ -47,22 +47,30 @@
     "build": "vite build && tsc -p tsconfig.build.json",
     "prepack": "bun run build",
     "prepublishOnly": "bun run build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
+    "@angular/common": ">=16",
     "@angular/core": ">=16",
     "react": ">=18",
     "react-dom": ">=18",
     "solid-js": ">=1.6"
   },
   "devDependencies": {
+    "@angular/common": "^22.0.7",
     "@angular/core": "^22.0.7",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.7",
+    "@types/react-dom": "^19.2.4",
+    "happy-dom": "^20.11.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "solid-js": "^1.9.14",
     "typescript": "~6.0.2",
-    "vite": "^8.1.1"
+    "vite": "^8.1.1",
+    "vitest": "^4.1.10"
   }
 }

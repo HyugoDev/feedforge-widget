@@ -1,16 +1,15 @@
 import { createEffect, on, onCleanup } from 'solid-js'
 import type { Component } from 'solid-js'
 import { loadFeedForgeWidget, TAG_NAME } from '../core'
+import type { FeedForgeWidgetProps } from '../core'
+
+export type { FeedForgeWidgetProps } from '../core'
 
 /**
- * Props del componente {@link FeedForgeWidget}.
- *
- * La apariencia del widget se configura desde el dashboard de FeedForge, por
- * lo que el único parámetro que recibe el componente es el `token` del feed
- * público.
+ * Custom element `<feedforge-widget>` tipado para acceso seguro al atributo
+ * `token`.
  */
-export interface FeedForgeWidgetProps {
-    /** Token público del feed (se obtiene en el dashboard de FeedForge). */
+interface FeedForgeWidgetElement extends HTMLElement {
     token: string
 }
 
@@ -26,18 +25,23 @@ export const FeedForgeWidget: Component<FeedForgeWidgetProps> = (props) => {
     const host: HTMLDivElement = document.createElement('div')
 
     let cancelled = false
+    let widget: FeedForgeWidgetElement | null = null
     onCleanup(() => { cancelled = true })
+
+    // El efecto nace en el owner del componente: Solid lo disposa al desmontar.
+    // Mientras la carga no haya terminado `widget` es null → no-op, sin leak.
+    createEffect(on(() => props.token, (token) => {
+        widget?.setAttribute('token', token)
+    }))
 
     loadFeedForgeWidget()
         .then(() => {
             if (cancelled) return
-            const widget = document.createElement(TAG_NAME)
-            widget.setAttribute('token', props.token)
-            host.append(widget)
-
-            createEffect(on(() => props.token, (next) => {
-                widget.setAttribute('token', next)
-            }, { defer: true }))
+            const el = document.createElement(TAG_NAME) as FeedForgeWidgetElement
+            // Lectura reactiva: el token más reciente aunque haya cambiado durante la carga.
+            el.setAttribute('token', props.token)
+            widget = el
+            host.append(el)
         })
         .catch(() => {
             if (!cancelled) host.textContent = 'No se pudo cargar el feed'
