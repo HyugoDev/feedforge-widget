@@ -3,7 +3,7 @@
  * `public/widget.js` en el proyecto feedforge. Va como query (?v=) en la URL
  * para romper la caché del navegador cuando se publica una versión nueva.
  */
-const WIDGET_SCRIPT_VERSION = '5.2' as const
+const WIDGET_SCRIPT_VERSION = '5.3' as const
 
 /**
  * URL del script del widget servido desde el CDN de FeedForge.
